@@ -82,11 +82,12 @@
 
   .card p { margin: 0; font-size: 13.5px; line-height: 1.45; color: #243049; }
   .jump { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px; }
-  .jump a {
+  .jump a, .jump-btn {
     font-size: 12px; color: #12203a; text-decoration: none;
     border: 1px solid var(--line); background: #fff; padding: 5px 9px; border-radius: 999px;
+    cursor: pointer; font-family: inherit;
   }
-  .jump a:hover { border-color: #e2b94a; background: #fff8e8; }
+  .jump a:hover, .jump-btn:hover { border-color: #e2b94a; background: #fff8e8; }
   .tile { cursor: pointer; }
   .tile:hover { border-color: #e2b94a; }
   .tile .k { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
@@ -199,12 +200,12 @@
     <h3>Where to click next</h3>
     <p class="small" style="margin-bottom:8px">Assistants tabs keep the original KPI matrix, licensing, per-vendor models, and CISO view. Specialist and Cyber tabs are the function matrices with the same 0–10 pills.</p>
     <div class="jump">
-      <a href="#" data-go="asst-overview">Assistants snapshot</a>
-      <a href="#" data-go="matrix">KPI matrix</a>
-      <a href="#" data-go="pricing">Licensing</a>
-      <a href="#" data-go="ciso">CISO / assistants</a>
-      <a href="#" data-go="other">Specialist tools</a>
-      <a href="#" data-go="cyber">Cybersecurity tools</a>
+      <button type="button" class="jump-btn" data-go="asst-overview">Assistants snapshot</button>
+      <button type="button" class="jump-btn" data-go="matrix">KPI matrix</button>
+      <button type="button" class="jump-btn" data-go="pricing">Licensing</button>
+      <button type="button" class="jump-btn" data-go="ciso">CISO / assistants</button>
+      <button type="button" class="jump-btn" data-go="other">Specialist tools</button>
+      <button type="button" class="jump-btn" data-go="cyber">Cybersecurity tools</button>
     </div>
   </div>
 </section>
@@ -1387,11 +1388,12 @@
     b.onclick = () => show(id);
     tabs.appendChild(b);
   });
-  document.querySelectorAll("[data-go]").forEach(el => {
-    el.addEventListener("click", e => {
-      e.preventDefault();
-      show(el.getAttribute("data-go"));
-    });
+  document.addEventListener("click", e => {
+    const el = e.target.closest("[data-go]");
+    if (!el) return;
+    e.preventDefault();
+    const id = el.getAttribute("data-go");
+    if (id && document.getElementById(id)) show(id);
   });
 </script>
 </body>
