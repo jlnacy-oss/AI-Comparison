@@ -41,6 +41,8 @@
   main { padding: 20px 28px 60px; max-width: 1400px; margin: 0 auto; }
   .page { display: none; }
   .page.active { display: block; }
+  .page:target { display: block; }
+  body:has(.page:target) .page.active:not(:target) { display: none; }
   .grid { display: grid; gap: 14px; }
   .g2 { grid-template-columns: repeat(2, 1fr); }
   .g3 { grid-template-columns: repeat(3, 1fr); }
@@ -106,21 +108,21 @@
   <div class="callout">Default 2026 posture for a Microsoft-standardized enterprise: <b>M365 Copilot</b> as the tenant baseline, <b>Claude or ChatGPT</b> as the daily brain, <b>Perplexity</b> when the answer must be cited. Add a specialist only when volume, brand lock, or control-plane beats that trio. Cyber is a separate PO — do not treat a chatbot CISO slide as EDR.</div>
 
   <div class="grid g3" style="margin-top:14px">
-    <div class="card tile" data-go="asst-overview">
+    <a class="card tile" href="#asst-overview">
       <div class="k">Layer 1 — daily brain</div>
       <div class="t">Assistants</div>
       <p>Nine general models. Start here for chat, research, code, docs, legal first-pass. Open the Assistants snapshot, KPI matrix, and vendor tabs.</p>
-    </div>
-    <div class="card tile" data-go="other">
+    </a>
+    <a class="card tile" href="#other">
       <div class="k">Layer 2 — specialists</div>
       <div class="t">Writing, decks, video, meetings</div>
       <p>Buy when the assistant drafts “good enough” but you need brand kits, avatar video, CRM notes, or self-hosted agents at scale.</p>
-    </div>
-    <div class="card tile" data-go="cyber">
+    </a>
+    <a class="card tile" href="#cyber">
       <div class="k">Layer 3 — security products</div>
       <div class="t">Cybersecurity tools</div>
       <p>EDR/XDR, NDR, SIEM/SOAR, agentic SOC, AppSec. These detect and contain. Assistants only summarize.</p>
-    </div>
+    </a>
   </div>
 
   <h4>If you only remember five rules</h4>
@@ -200,12 +202,12 @@
     <h3>Where to click next</h3>
     <p class="small" style="margin-bottom:8px">Assistants tabs keep the original KPI matrix, licensing, per-vendor models, and CISO view. Specialist and Cyber tabs are the function matrices with the same 0–10 pills.</p>
     <div class="jump">
-      <button type="button" class="jump-btn" data-go="asst-overview">Assistants snapshot</button>
-      <button type="button" class="jump-btn" data-go="matrix">KPI matrix</button>
-      <button type="button" class="jump-btn" data-go="pricing">Licensing</button>
-      <button type="button" class="jump-btn" data-go="ciso">CISO / assistants</button>
-      <button type="button" class="jump-btn" data-go="other">Specialist tools</button>
-      <button type="button" class="jump-btn" data-go="cyber">Cybersecurity tools</button>
+      <a class="jump-btn" href="#asst-overview">Assistants snapshot</a>
+      <a class="jump-btn" href="#matrix">KPI matrix</a>
+      <a class="jump-btn" href="#pricing">Licensing</a>
+      <a class="jump-btn" href="#ciso">CISO / assistants</a>
+      <a class="jump-btn" href="#other">Specialist tools</a>
+      <a class="jump-btn" href="#cyber">Cybersecurity tools</a>
     </div>
   </div>
 </section>
@@ -1376,9 +1378,25 @@
   ];
   const tabs = document.getElementById("tabs");
   function show(id) {
+    if (!id || !document.getElementById(id)) return;
     document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.id === id));
     document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === id));
+    if (location.hash !== "#" + id) location.hash = id;
     if (id !== "other" && id !== "cyber") window.scrollTo({top:0, behavior:"smooth"});
+  }
+  window.show = show;
+  window.addEventListener("hashchange", () => {
+    const id = (location.hash || "#overview").slice(1);
+    if (document.getElementById(id)) {
+      document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.id === id));
+      document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === id));
+    }
+  });
+  if (location.hash) {
+    const id = location.hash.slice(1);
+    if (document.getElementById(id)) {
+      document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === id));
+    }
   }
   pages.forEach(([id,label], i) => {
     const b = document.createElement("button");
